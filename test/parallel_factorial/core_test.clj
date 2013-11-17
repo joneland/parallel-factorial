@@ -10,4 +10,4 @@
     (is (= (factorial 3) 6))
     (is (= (factorial 5) 120)))
   (testing "with negative integers"
-    (is (thrown-with-msg? ArithmeticException #"Cannot calculate factorial of negative integer -1" (factorial -1))))) 
+    (is (thrown-with-msg? ArithmeticException #"Cannot calculate factorial of negative integer -1" (factorial -1)))))
