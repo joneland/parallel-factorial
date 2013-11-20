@@ -1,13 +1,18 @@
-(ns parallel-factorial.core)
+(ns parallel-factorial.core)  
 
 (defn factorial [x]
   (cond
     (= x 0) 1
-    (> x 0) (reduce *' (range 1 (inc x)))
+    (> x 0) (reduce *' (range 1N (bigint (inc x))))
     :else (throw (ArithmeticException. (str "Cannot calculate factorial of negative integer " x)))))
 
-(defn sequential [x n]
-  (time (doall (map factorial (repeat n x)))))
-
 (defn parallel [x n]
-  (time (doall (pmap factorial (repeat n x)))))
+  (doall (pmap factorial (repeat n x))))
+
+(defn convert-to-seconds[millis]
+  (str (float (/  millis 1000)) " seconds"))
+
+(defn benchmark[x n]
+  (let [start (System/currentTimeMillis)
+        work (parallel x n)]
+  (convert-to-seconds (- (System/currentTimeMillis) start)))) 
