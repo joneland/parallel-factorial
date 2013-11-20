@@ -10,7 +10,7 @@
   (doall (pmap factorial (repeat n x))))
 
 (defn convert-to-seconds[millis]
-  (str (float (/  millis 1000)) " seconds"))
+  (format "Processed in %.3f seconds"  (float (/  millis 1000))))
 
 (defn benchmark[x n]
   (let [start (System/currentTimeMillis)
