@@ -1,18 +1,26 @@
 (ns parallel-factorial.core)  
 
+(defn calculate-chunk-size [x]
+  (let [chunk-size (quot x (.. Runtime getRuntime availableProcessors))]
+    (cond 
+      (= 0 chunk-size) 1
+      :else chunk-size)))
+
 (defn factorial [x]
   (cond
     (= x 0) 1
-    (> x 0) (reduce *' (range 1N (bigint (inc x))))
+    (> x 0)
+        (let [parts (partition-all (calculate-chunk-size x) (range 1N (bigint (inc x))))]
+          (reduce * (pmap #(reduce * %) parts)))
     :else (throw (ArithmeticException. (str "Cannot calculate factorial of negative integer " x)))))
 
-(defn parallel [x n]
-  (doall (pmap factorial (repeat n x))))
+(defn parallel [items]
+  (doall (pmap factorial items)))
 
-(defn convert-to-seconds[millis]
+(defn convert-to-seconds [millis]
   (format "Processed in %.3f seconds"  (float (/  millis 1000))))
 
-(defn benchmark[x n]
+(defn benchmark [items]
   (let [start (System/currentTimeMillis)
-        work (parallel x n)]
-  (convert-to-seconds (- (System/currentTimeMillis) start)))) 
+        result (parallel items)]
+    (convert-to-seconds (- (System/currentTimeMillis) start)))) 
