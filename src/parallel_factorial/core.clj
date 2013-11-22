@@ -14,13 +14,10 @@
           (reduce * (pmap #(reduce * %) parts)))
     :else (throw (ArithmeticException. (str "Cannot calculate factorial of negative integer " x)))))
 
-(defn parallel [items]
-  (doall (pmap factorial items)))
-
 (defn convert-to-seconds [millis]
   (format "Processed in %.3f seconds"  (float (/  millis 1000))))
 
 (defn benchmark [items]
   (let [start (System/currentTimeMillis)
-        result (parallel items)]
+        result (doall (pmap factorial items))]
     (convert-to-seconds (- (System/currentTimeMillis) start)))) 
